@@ -5,14 +5,14 @@ import java.util.Scanner;
 
 
 public class Menu {
-    private static String loggedInUsername = null;
+    private static boolean loggedIn = false;
 
-    public static void menu() {
+    public static void menu(MyClientSocket servidor) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
 
-            if (loggedInUsername == null) {
+            if (!loggedIn) {
                 // Display options for unauthenticated users
                 System.out.println("1. Authenticate");
                 System.out.println("2. Register");
@@ -27,18 +27,19 @@ public class Menu {
             int choice = Integer.parseInt(scanner.nextLine());
 
 
-            if (loggedInUsername == null) {
+            if (!loggedIn) {
                 // Handle options for unauthenticated users
                 switch (choice) {
                     case 1:
+
                         System.out.print("Enter your username: ");
                         String authUsername = scanner.nextLine();
                         System.out.print("Enter your password: ");
                         String authPassword = scanner.nextLine();
                         // Add authentication logic here (check if username and password are valid)
-                        if (authenticate(authUsername, authPassword)) {
-                            loggedInUsername = authUsername;
-                            System.out.println("Authentication successful. Welcome, " + loggedInUsername + "!");
+                        if (loggedIn = SendMessages.sendAuthenticationRequest(authUsername, authPassword,servidor)) {
+
+                            System.out.println("Authentication successful. Welcome, " + authUsername + "!");
                         } else {
                             System.out.println("Authentication failed. Invalid username or password.");
                         }
@@ -49,9 +50,8 @@ public class Menu {
                         System.out.print("Enter your desired password: ");
                         String regPassword = scanner.nextLine();
                         // Add registration logic here (create a new user account)
-                        if (register(regUsername, regPassword)) {
-                            loggedInUsername = regUsername;
-                            System.out.println("Registration successful. Welcome, " + loggedInUsername + "!");
+                        if (loggedIn = SendMessages.sendRegistationRequest(regUsername, regPassword,servidor)) {
+                            System.out.println("Registration successful. Welcome, " + regUsername + "!");
                         } else {
                             System.out.println("Registration failed. The username may already be taken.");
                         }
@@ -71,10 +71,10 @@ public class Menu {
                         System.out.print("Enter the file name: ");
                         String fileName = scanner.nextLine();
                         // Add your file handling logic here, based on the fileName provided.
-                        SendMessages.sendCode(fileName);
+                        SendMessages.sendCode(fileName,servidor);
                         break;
                     case 5:
-                        loggedInUsername = null; // Logout the user
+                        loggedIn = false; // Logout the user
                         System.out.println("Logout successful. You are now unauthenticated.");
                         break;
                     default:
@@ -84,11 +84,8 @@ public class Menu {
         }
     }
 
-    private static boolean authenticate(String username, String password) {
-        return SendMessages.sendAuthenticationRequest(username,password);
-    }
 
-    private static boolean register(String username, String password) {
-        return SendMessages.sendRegistationRequest(username,password);
+    private static boolean register(String username, String password,MyClientSocket servidor) {
+        return SendMessages.sendRegistationRequest(username,password,servidor);
     }
 }
