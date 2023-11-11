@@ -94,8 +94,12 @@ public class Client {
                             byte[] fileContent = Files.readAllBytes(Paths.get(path));
                             List<Message> tp = (Message.createMessagesFromByteArray(fileContent,(byte) 3, mem));
                             for(Message c: tp){
+                                System.out.println(Message.serializeMessage(c).length);
                                 out.write(Message.serializeMessage(c));
                                 out.flush();
+
+                                byte[] buffer = new byte[1000];
+                                in.read(buffer);
                             }
 
                             List<Message> tmp = new ArrayList<>();

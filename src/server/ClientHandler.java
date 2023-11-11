@@ -36,8 +36,8 @@ public class ClientHandler implements Runnable{
             while ((bytesRead = in.read(buffer)) != -1) {
 
                 int offset = bytesRead;
-                for (int i = 0; i < bytesRead; i += 1000) {
-                    int blockSize = Math.min(1000, offset);
+                for (int i = 0; i < bytesRead; i += 1095) {
+                    int blockSize = Math.min(1095, offset);
                     byte[] receivedData = Arrays.copyOfRange(buffer, i, i + blockSize);
                     tmp.add(Message.deserializeMessage(receivedData));
                     System.out.println(i);
@@ -45,6 +45,9 @@ public class ClientHandler implements Runnable{
                 }
 
                 Message data = tmp.get(tmp.size()-1);
+
+                // mensagem ACK para nao encher o buffer
+                if(data.getMsg() == (byte) 3) out.write(Message.serializeMessage(new Message((byte) 10)));
                 if(data.isLast()){
                     ret = messageManager(tmp);
                     tmp.clear();
