@@ -18,6 +18,9 @@ import java.util.Arrays;
  * 5. Autenticação efetuada
  * 6. Username já utilizado
  * 7. Username registado
+ * 8. Resultado FaaS
+ * 9. Erro na execução
+ * 10. Demasiada memória necessária
  */
 
 

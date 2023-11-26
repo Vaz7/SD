@@ -1,15 +1,31 @@
 package server;
 
+import java.net.Socket;
+import java.util.concurrent.locks.Condition;
+
 public class Job {
     //bytes do programa
-    byte[] bytes;
+    private byte[] bytes;
     //memoria necessaria
-    int memoria;
+    private int memoria;
+    private Socket socket;
 
+    public byte[] getBytes() {
+        return bytes;
+    }
 
-    public Job(byte[] bytes, int memoria) {
+    public int getMemoria() {
+        return memoria;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public Job(byte[] bytes, int memoria, Socket socket) {
         this.bytes = bytes;
         this.memoria = memoria;
+        this.socket = socket;
     }
 
 }

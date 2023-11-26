@@ -25,6 +25,8 @@ public class Server_Protocol {
                 // criar thread a seguir
                 Thread clientThread = new Thread(new ClientHandler(clientSocket, server));
                 clientThread.start();
+                Thread jobmanager = new Thread(new JobManager(server, clientSocket));
+                jobmanager.start();
             }
 
         } catch (IOException e) {

@@ -1,5 +1,6 @@
 package server;
 
+import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -11,35 +12,46 @@ public class Server {
     private ReentrantReadWriteLock catalogo = new ReentrantReadWriteLock();
     private Lock writel = catalogo.writeLock();
     private Lock readl = catalogo.readLock();
-    private ReentrantLock fifo = new ReentrantLock();
+
+    /**
+     * para escrever e ler da queue
+     */
+    private ReentrantReadWriteLock fifo = new ReentrantReadWriteLock();
+    private Lock writefifo = fifo.writeLock();
+    private Lock readfifo = fifo.readLock();
+
     private List<Job> jobQueue = new ArrayList<>();
+    private int availableMemory = 500;
+    private ReentrantLock memory = new ReentrantLock();
 
-
-    private class Memory {
-        int quantity = 500;
-        private Condition tooLow = fifo.newCondition();
-    }
-    private Memory mem = new Memory();
+    /**
+     * para usar condition quando a memória leva update
+     */
+    private ReentrantLock l = new ReentrantLock();
+    private Condition isEmpty = l.newCondition();
+    private Condition canExecute = l.newCondition();
 
     public Server(){
         this.userInfo = new HashMap<>();
     }
 
-    public void addJob(Job j){
-        fifo.lock();
+
+    public List<Job> getJobQueue() {
+        this.readfifo.lock();
         try{
-            jobQueue.add(j);
+            return jobQueue;
+        } finally {
+            this.readfifo.unlock();
         }
-        finally {
-            fifo.unlock();
-        }
-    }
-    public void printQueue(){
-        System.out.println("the queue has " + this.jobQueue.size() + " elements!");
     }
 
-    public void removeJob(){
-        // @TODO
+    public Job getFirstElement(){
+        this.readfifo.lock();
+        try{
+            return jobQueue.get(0);
+        } finally {
+            this.readfifo.unlock();
+        }
     }
 
     /**
@@ -86,7 +98,65 @@ public class Server {
         }
     }
 
-    public void addJob(){
-        // @TODO
+    public void addJob(Job j){
+        writefifo.lock();
+        l.lock();
+        try{
+            jobQueue.add(j);
+            System.out.println("aqui 1");
+            isEmpty.signalAll();
+        } finally {
+            writefifo.unlock();
+            l.unlock();
+        }
+    }
+
+    public void printQueue(){
+        System.out.println("the queue has " + this.jobQueue.size() + " elements!");
+    }
+
+    public void removeJob(Job j){
+        writefifo.lock();
+        l.lock();
+        try{
+            while(j.getMemoria() > this.availableMemory){
+                canExecute.await();
+            }
+            jobQueue.remove(j);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            writefifo.unlock();
+            l.unlock();
+        }
+    }
+
+    public void updateMem(int mem) {
+        memory.lock();
+        l.lock();
+        try {
+            this.availableMemory += mem;
+            if(mem > 0){
+                canExecute.signalAll();
+            }
+        } finally {
+            memory.unlock();
+            l.unlock();
+        }
+    }
+
+    public void isEmpty(){
+        l.lock();
+        try{
+            List<Job> a = getJobQueue();
+            while(a.isEmpty()){
+                isEmpty.await();
+                System.out.println("aqui 5");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            l.unlock();
+        }
     }
 }

@@ -75,6 +75,9 @@ public class Client {
                             con.sendMessage(new Message(fileContent, (byte) 3, mem));
 
                             Message rcvd = con.receiveMessage();
+                            // @TODO
+                            // meter a interpretar as mensagens que cria a partir do (byte)
+                            // dicionario na classe Mensagem
                             System.out.println(new String(rcvd.getData()));
                         } catch(IOException e){
                             e.printStackTrace();

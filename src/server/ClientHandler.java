@@ -40,6 +40,8 @@ public class ClientHandler implements Runnable{
                     case 4:
                         con.sendMessage(new Message((byte) 7));
                         break;
+                    case 5:
+                        con.sendMessage(new Message((byte) 10));
                 }
             }
         } catch (IOException e) {
@@ -84,15 +86,13 @@ public class ClientHandler implements Runnable{
                 // aqui vai apenas adicionar a uma "lista"
                 // Método de listar o código com a memória e criar algoritmo de escolha
                 // utilizar conditions
-                byte[] output;
-                boolean flag = false;
-                while(!flag){
-                        Job job = new Job(tmp.getData(),tmp.getNum());
-                        server.addJob(job);
-                        flag = true;
-                        System.err.println("Job added to queue");
-                        server.printQueue();
+                if(tmp.getNum() > 500){
+                    return 5;
                 }
+                Job job = new Job(tmp.getData(),tmp.getNum(), this.clientSocket);
+                server.addJob(job);
+                System.err.println("Job added to queue");
+                server.printQueue();
 
                 break;
         }
