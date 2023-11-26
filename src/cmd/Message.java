@@ -25,7 +25,7 @@ public class Message implements Serializable {
     /**
      * byte[] para transportar dados
      */
-    private byte[] data; // MAX 990 bytes
+    private byte[] data;
     /**
      * length do byte[] para fazer deserialize
      */

@@ -37,6 +37,7 @@ public class Client {
                                 System.out.println("Authentication successful. Welcome! ");
                             } else if (rcvd.getMsg() == (byte) 4){
                                 System.out.println("Authentication failed. Invalid username or password.");
+                                break;
                             }
                         } while(!loggedIn);
                         break;
@@ -51,6 +52,7 @@ public class Client {
                                 register = true;
                             } else if (rcvd.getMsg() == (byte) 6){
                                 System.out.println("Registration failed. The username may already be taken.");
+                                break;
                             }
                         }while(!register);
                         break;

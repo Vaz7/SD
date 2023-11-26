@@ -2,6 +2,8 @@ package server;
 
 import cmd.Connection;
 import cmd.Message;
+import sd23.JobFunction;
+import sd23.JobFunctionException;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -83,7 +85,18 @@ public class ClientHandler implements Runnable{
                 // aqui vai apenas adicionar a uma "lista"
                 // Método de listar o código com a memória e criar algoritmo de escolha
                 // utilizar conditions
-                System.out.println(new String(tmp.getData()));
+                byte[] output;
+                boolean flag = false;
+                while(!flag){
+                    try {
+                        output = JobFunction.execute(tmp.getData());
+                        flag = true;
+                        System.err.println("success, returned "+output.length+" bytes");
+                    } catch (JobFunctionException e) {
+                        System.err.println("job failed: code="+e.getCode()+" message="+e.getMessage());
+                    }
+                }
+
                 break;
         }
         return -1;
