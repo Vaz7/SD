@@ -1,8 +1,6 @@
 package server;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -14,6 +12,8 @@ public class Server {
     private Lock writel = catalogo.writeLock();
     private Lock readl = catalogo.readLock();
     private ReentrantLock fifo = new ReentrantLock();
+    private List<Job> jobQueue = new ArrayList<>();
+
 
     private class Memory {
         int quantity = 500;
@@ -23,6 +23,23 @@ public class Server {
 
     public Server(){
         this.userInfo = new HashMap<>();
+    }
+
+    public void addJob(Job j){
+        fifo.lock();
+        try{
+            jobQueue.add(j);
+        }
+        finally {
+            fifo.unlock();
+        }
+    }
+    public void printQueue(){
+        System.out.println("the queue has " + this.jobQueue.size() + " elements!");
+    }
+
+    public void removeJob(){
+        // @TODO
     }
 
     /**

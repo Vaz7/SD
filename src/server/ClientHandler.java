@@ -81,20 +81,17 @@ public class ClientHandler implements Runnable{
             case 3:
                 // TO DO:
 
-
                 // aqui vai apenas adicionar a uma "lista"
                 // Método de listar o código com a memória e criar algoritmo de escolha
                 // utilizar conditions
                 byte[] output;
                 boolean flag = false;
                 while(!flag){
-                    try {
-                        output = JobFunction.execute(tmp.getData());
+                        Job job = new Job(tmp.getData(),tmp.getNum());
+                        server.addJob(job);
                         flag = true;
-                        System.err.println("success, returned "+output.length+" bytes");
-                    } catch (JobFunctionException e) {
-                        System.err.println("job failed: code="+e.getCode()+" message="+e.getMessage());
-                    }
+                        System.err.println("Job added to queue");
+                        server.printQueue();
                 }
 
                 break;
