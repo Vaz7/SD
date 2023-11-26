@@ -14,6 +14,7 @@ public class Connection {
     private Lock writel = new ReentrantLock();
 
     public Connection(Socket clientSocket) throws IOException {
+        System.out.println(clientSocket);
         this.dis = new DataInputStream(clientSocket.getInputStream());
         this.dos = new DataOutputStream(clientSocket.getOutputStream());
     }
