@@ -3,15 +3,23 @@ package server;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Server {
     private Map<String, byte[]> userInfo;
-    private int memory;
     private ReentrantReadWriteLock catalogo = new ReentrantReadWriteLock();
     private Lock writel = catalogo.writeLock();
     private Lock readl = catalogo.readLock();
+    private ReentrantLock fifo = new ReentrantLock();
+
+    private class Memory {
+        int quantity = 500;
+        private Condition tooLow = fifo.newCondition();
+    }
+    private Memory mem = new Memory();
 
     public Server(){
         this.userInfo = new HashMap<>();
@@ -59,5 +67,9 @@ public class Server {
         } finally {
             readl.unlock();
         }
+    }
+
+    public void addJob(){
+        // @TODO
     }
 }

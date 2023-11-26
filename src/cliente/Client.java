@@ -73,6 +73,7 @@ public class Client {
                         try{
                             byte[] fileContent = Files.readAllBytes(Paths.get(path));
                             con.sendMessage(new Message(fileContent, (byte) 3, mem));
+
                             Message rcvd = con.receiveMessage();
                             System.out.println(new String(rcvd.getData()));
                         } catch(IOException e){
