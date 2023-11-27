@@ -92,4 +92,23 @@ public class Client {
             }
         }
     }
+
+    public void connectionTest(String path, int mem) throws IOException {
+        Socket socket = new Socket("127.0.0.1", 1234);
+        System.out.println("Connected to the server at 127.0.0.1:1234");
+        Connection con = new Connection(socket);
+
+        try{
+            byte[] fileContent = Files.readAllBytes(Paths.get(path));
+            con.sendMessage(new Message(fileContent, (byte) 3, mem));
+
+            Message rcvd = con.receiveMessage();
+            // @TODO
+            // meter a interpretar as mensagens que cria a partir do (byte)
+            // dicionario na classe Mensagem
+            System.out.println(new String(rcvd.getData()));
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
 }
