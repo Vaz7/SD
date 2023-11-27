@@ -45,15 +45,6 @@ public class Server {
         }
     }
 
-    public Job getFirstElement(){
-        this.readfifo.lock();
-        try{
-            return jobQueue.get(0);
-        } finally {
-            this.readfifo.unlock();
-        }
-    }
-
     /**
      * Método que adiciona user à hash
      * @param id
@@ -103,28 +94,7 @@ public class Server {
         l.lock();
         try{
             jobQueue.add(j);
-            System.out.println("aqui 1");
             isEmpty.signalAll();
-        } finally {
-            writefifo.unlock();
-            l.unlock();
-        }
-    }
-
-    public void printQueue(){
-        System.out.println("the queue has " + this.jobQueue.size() + " elements!");
-    }
-
-    public void removeJob(Job j){
-        writefifo.lock();
-        l.lock();
-        try{
-            while(j.getMemoria() > this.availableMemory){
-                canExecute.await();
-            }
-            jobQueue.remove(j);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             writefifo.unlock();
             l.unlock();
@@ -145,18 +115,29 @@ public class Server {
         }
     }
 
-    public void isEmpty(){
+    public Job execute(){
         l.lock();
         try{
-            List<Job> a = getJobQueue();
-            while(a.isEmpty()){
+            while(getJobQueue().isEmpty()){
                 isEmpty.await();
-                System.out.println("aqui 5");
             }
+            writefifo.lock();
+            Job j = jobQueue.remove(0);
+            writefifo.unlock();
+            while(j.getMemoria() > this.availableMemory){
+                canExecute.await();
+            }
+            int mem = j.getMemoria();
+            memory.lock();
+            this.availableMemory -= mem;
+            System.out.println(this.availableMemory);
+            return j;
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
             l.unlock();
+            memory.unlock();
         }
     }
 }

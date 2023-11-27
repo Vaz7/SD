@@ -15,8 +15,8 @@ public class Server_Protocol {
 
     public void initServer() {
         try{
-            ServerSocket serverSocket = new ServerSocket(1234);
-            System.out.println("Server is running on port 1234");
+            ServerSocket serverSocket = new ServerSocket(9090);
+            System.out.println("Server is running on port 9090");
 
             while(true){
                 Socket clientSocket = serverSocket.accept();
@@ -25,8 +25,6 @@ public class Server_Protocol {
                 // criar thread a seguir
                 Thread clientThread = new Thread(new ClientHandler(clientSocket, server));
                 clientThread.start();
-                Thread jobmanager = new Thread(new JobManager(server, clientSocket));
-                jobmanager.start();
             }
 
         } catch (IOException e) {
