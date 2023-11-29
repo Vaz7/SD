@@ -13,18 +13,22 @@ public class Server_Protocol {
         this.server = new Server();
     }
 
+    public JobList jobList = new JobList();
+
     public void initServer() {
         try{
-            ServerSocket serverSocket = new ServerSocket(9090);
-            System.out.println("Server is running on port 9090");
+            ServerSocket serverSocket = new ServerSocket(1234);
+            System.out.println("Server is running on port 1234");
 
             while(true){
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client is connected " + clientSocket.getInetAddress());
 
                 // criar thread a seguir
-                Thread clientThread = new Thread(new ClientHandler(clientSocket, server));
+                Thread clientThread = new Thread(new ClientHandler(clientSocket, server,jobList));
                 clientThread.start();
+                Thread jobmanager = new Thread(new JobManager(server, clientSocket,jobList));
+                jobmanager.start();
             }
 
         } catch (IOException e) {

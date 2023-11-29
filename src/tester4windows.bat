@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 rem Set the number of times to run the program (N)
-set N=5
+set N=4
 
 rem Set the path to the Java compiler (javac) and Java runtime (java)
 set JAVA_COMPILER_PATH="C:\Program Files\Java\jdk-21\bin\javac.exe"
@@ -20,7 +20,7 @@ for /L %%i in (1,1,%N%) do (
     start "Java Program - %%i" %JAVA_RUNTIME_PATH% -cp . cliente.Main C:\Users\henri\Desktop\test.txt %%i
 
     rem Add a delay if needed (optional)
-    timeout /t 1 /nobreak >nul
+    timeout /t 0 /nobreak >nul
 )
 
 endlocal

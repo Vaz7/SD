@@ -21,14 +21,13 @@ public class Server {
     private Lock readfifo = fifo.readLock();
 
     private List<Job> jobQueue = new ArrayList<>();
-    private int availableMemory = 500;
+    private int availableMemory = 500000;
     private ReentrantLock memory = new ReentrantLock();
 
     /**
      * para usar condition quando a memória leva update
      */
     private ReentrantLock l = new ReentrantLock();
-    private Condition isEmpty = l.newCondition();
     private Condition canExecute = l.newCondition();
 
     public Server(){
@@ -36,14 +35,6 @@ public class Server {
     }
 
 
-    public List<Job> getJobQueue() {
-        this.readfifo.lock();
-        try{
-            return jobQueue;
-        } finally {
-            this.readfifo.unlock();
-        }
-    }
 
     /**
      * Método que adiciona user à hash
@@ -89,18 +80,6 @@ public class Server {
         }
     }
 
-    public void addJob(Job j){
-        writefifo.lock();
-        l.lock();
-        try{
-            jobQueue.add(j);
-            isEmpty.signalAll();
-        } finally {
-            writefifo.unlock();
-            l.unlock();
-        }
-    }
-
     public void updateMem(int mem) {
         memory.lock();
         l.lock();
@@ -115,29 +94,8 @@ public class Server {
         }
     }
 
-    public Job execute(){
-        l.lock();
-        try{
-            while(getJobQueue().isEmpty()){
-                isEmpty.await();
-            }
-            writefifo.lock();
-            Job j = jobQueue.remove(0);
-            writefifo.unlock();
-            while(j.getMemoria() > this.availableMemory){
-                canExecute.await();
-            }
-            int mem = j.getMemoria();
-            memory.lock();
-            this.availableMemory -= mem;
-            System.out.println(this.availableMemory);
-            return j;
-
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            l.unlock();
-            memory.unlock();
-        }
+    public int getAvailableMemory(){
+        return this.availableMemory;
     }
+
 }

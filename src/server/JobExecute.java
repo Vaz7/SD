@@ -9,25 +9,30 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class JobExecute implements Runnable{
-    private Connection con;
+    private Socket clientSocket;
     private Job job;
     private Server server;
 
-    public JobExecute(Connection socket, Job job, Server server){
+    public JobExecute(Socket socket, Job job, Server server){
         this.job = job;
-        this.con = socket;
+        this.clientSocket = socket;
         this.server = server;
     }
     @Override
     public void run() {
+        Connection con = null;
+        try {
+            con = new Connection(clientSocket);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         try {
             byte[] output = JobFunction.execute(this.job.getBytes());
-            server.updateMem(this.job.getMemoria());
+            server.updateMem(-job.getMemoria());
             System.err.println("success, returned " + output.length + " bytes");
 
 
             con.sendMessage(new Message(output, (byte) 8, 0));
-            System.out.println("enviei mensagem");
         } catch (JobFunctionException e) {
             System.err.println("job failed: code="+e.getCode()+" message="+e.getMessage());
             try {

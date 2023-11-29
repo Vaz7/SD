@@ -5,11 +5,9 @@ import cmd.MenuView;
 import cmd.Message;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 public class Client {
     private boolean loggedIn;
@@ -74,11 +72,10 @@ public class Client {
                         int mem = view.getMemory();
                         try{
                             byte[] fileContent = Files.readAllBytes(Paths.get(path));
-                            System.out.println(new String(fileContent));
                             con.sendMessage(new Message(fileContent, (byte) 3, mem));
 
                             Message rcvd = con.receiveMessage();
-                            //
+                            // @TODO
                             // meter a interpretar as mensagens que cria a partir do (byte)
                             // dicionario na classe Mensagem
                             System.out.println(new String(rcvd.getData()));
@@ -97,26 +94,20 @@ public class Client {
     }
 
     public void connectionTest(String path, int mem) throws IOException {
-        Socket socket = new Socket(InetAddress.getLocalHost(), 9090);
-        System.out.println("Connected to the server at 127.0.0.1:9090");
+        Socket socket = new Socket("127.0.0.1", 1234);
+        System.out.println("Connected to the server at 127.0.0.1:1234");
         Connection con = new Connection(socket);
 
         try{
             byte[] fileContent = Files.readAllBytes(Paths.get(path));
             con.sendMessage(new Message(fileContent, (byte) 3, mem));
 
-            System.out.println("b4 recv");
             Message rcvd = con.receiveMessage();
-            System.out.println("after rcv");
-            //
+            // @TODO
             // meter a interpretar as mensagens que cria a partir do (byte)
             // dicionario na classe Mensagem
-            if(rcvd.getMsg() == (byte) 9)
-                System.out.println("erro");
-            else if (rcvd.getMsg() == (byte) 8)
-                System.out.println("cheguei bem");
-            Scanner sc = new Scanner(System.in);
-            sc.nextLine();
+
+            System.out.println(new String(rcvd.getData()));
         } catch(IOException e){
             e.printStackTrace();
         }

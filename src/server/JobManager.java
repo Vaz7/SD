@@ -1,23 +1,24 @@
 package server;
 
-import cmd.Connection;
-
 import java.net.Socket;
 import java.util.List;
 
 public class JobManager implements Runnable {
     private Server server;
-    private Connection con;
+    private Socket socket;
+    private JobList jobList;
 
-    public JobManager(Server server, Connection socket){
+    public JobManager(Server server, Socket socket,JobList jobList){
         this.server = server;
-        this.con = socket;
+        this.socket = socket;
+        this.jobList = jobList;
     }
     @Override
     public void run() {
         while (true){
-            Job c = server.execute();
-            Thread exec = new Thread(new JobExecute(this.con, c, server));
+            jobList.isEmpty();
+            Job c = jobList.removeJob(this.server.getAvailableMemory());
+            Thread exec = new Thread(new JobExecute(this.socket, c, server));
             exec.start();
         }
     }

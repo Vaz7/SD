@@ -2,6 +2,8 @@ package server;
 
 import cmd.Connection;
 import cmd.Message;
+import sd23.JobFunction;
+import sd23.JobFunctionException;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -10,17 +12,20 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class ClientHandler implements Runnable{
-    private Connection con;
+    private Socket clientSocket;
     private Server server;
+    private JobList jobList;
 
-    public ClientHandler(Socket clientSocket, Server server) throws IOException {
-        this.con = new Connection(clientSocket);
+    public ClientHandler(Socket clientSocket, Server server, JobList jobList) {
+        this.clientSocket = clientSocket;
         this.server = server;
+        this.jobList = jobList;
     }
 
     @Override
     public void run() {
         try {
+            Connection con = new Connection(clientSocket);
             for ( ; ; ) {
                 Message received = con.receiveMessage();
                 int ret = messageManager(received);
@@ -43,8 +48,6 @@ public class ClientHandler implements Runnable{
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -56,7 +59,7 @@ public class ClientHandler implements Runnable{
      *         2 -> username já criado
      *        -1 -> tudo certo, prosseguir
      */
-    private int messageManager(Message tmp) throws InterruptedException {
+    private int messageManager(Message tmp){
         // TO DO
         int caso = (int) tmp.getMsg();
         String idPassword;
@@ -88,11 +91,10 @@ public class ClientHandler implements Runnable{
                 if(tmp.getNum() > 500){
                     return 5;
                 }
-                Job job = new Job(tmp.getData(),tmp.getNum());
-                server.addJob(job);
-                Thread jobmanager = new Thread(new JobManager(server, con));
-                jobmanager.start();
-                jobmanager.join();
+                Job job = new Job(tmp.getData(),tmp.getNum(), this.clientSocket);
+                jobList.addJob(job);
+                System.err.println("Job added to queue");
+                jobList.printQueue();
 
                 break;
         }

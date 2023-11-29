@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Connection {
+public class Connection implements AutoCloseable {
     private DataInputStream dis;
     private DataOutputStream dos;
     private Lock readl = new ReentrantLock();
@@ -24,7 +24,6 @@ public class Connection {
         try{
             msg.serialize(dos);
             dos.flush();
-            System.out.println("partiu ----- ");
         } finally {
             this.writel.unlock();
         }
@@ -39,5 +38,10 @@ public class Connection {
         } finally {
             this.readl.unlock();
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        // @TODO
     }
 }

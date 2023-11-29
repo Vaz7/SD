@@ -8,6 +8,7 @@ public class Job {
     private byte[] bytes;
     //memoria necessaria
     private int memoria;
+    private Socket socket;
 
     public byte[] getBytes() {
         return bytes;
@@ -17,9 +18,14 @@ public class Job {
         return memoria;
     }
 
-    public Job(byte[] bytes, int memoria) {
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public Job(byte[] bytes, int memoria, Socket socket) {
         this.bytes = bytes;
         this.memoria = memoria;
+        this.socket = socket;
     }
 
 }
