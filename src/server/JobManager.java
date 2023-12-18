@@ -4,21 +4,19 @@ import java.net.Socket;
 import java.util.List;
 
 public class JobManager implements Runnable {
-    private Server server;
-    private Socket socket;
+    private Memory mem;
     private JobList jobList;
 
-    public JobManager(Server server, Socket socket,JobList jobList){
-        this.server = server;
-        this.socket = socket;
+    public JobManager(Memory mem,JobList jobList){
+        this.mem = mem;
         this.jobList = jobList;
     }
     @Override
     public void run() {
         while (true){
             jobList.isEmpty();
-            Job c = jobList.removeJob(this.server.getAvailableMemory());
-            Thread exec = new Thread(new JobExecute(this.socket, c, server));
+            Job c = jobList.removeJob(this.mem.getAvailableMemory());
+            Thread exec = new Thread(new JobExecute(c, mem));
             exec.start();
         }
     }

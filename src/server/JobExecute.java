@@ -9,17 +9,16 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class JobExecute implements Runnable{
-    private Socket clientSocket;
     private Job job;
-    private Server server;
+    private Memory mem;
 
-    public JobExecute(Socket socket, Job job, Server server){
+    public JobExecute(Job job, Memory mem){
         this.job = job;
-        this.clientSocket = socket;
-        this.server = server;
+        this.mem = mem;
     }
     @Override
     public void run() {
+        Socket clientSocket = job.getSocket();
         Connection con = null;
         try {
             con = new Connection(clientSocket);
@@ -28,7 +27,7 @@ public class JobExecute implements Runnable{
         }
         try {
             byte[] output = JobFunction.execute(this.job.getBytes());
-            server.updateMem(-job.getMemoria());
+            mem.updateMem(-job.getMemoria());
             System.err.println("success, returned " + output.length + " bytes");
 
 

@@ -14,11 +14,14 @@ public class Server_Protocol {
     }
 
     public JobList jobList = new JobList();
+    private Memory mem = new Memory();
 
     public void initServer() {
         try{
             ServerSocket serverSocket = new ServerSocket(1234);
             System.out.println("Server is running on port 1234");
+            Thread jobmanager = new Thread(new JobManager(mem,jobList));
+            jobmanager.start();
 
             while(true){
                 Socket clientSocket = serverSocket.accept();
@@ -27,8 +30,6 @@ public class Server_Protocol {
                 // criar thread a seguir
                 Thread clientThread = new Thread(new ClientHandler(clientSocket, server,jobList));
                 clientThread.start();
-                Thread jobmanager = new Thread(new JobManager(server, clientSocket,jobList));
-                jobmanager.start();
             }
 
         } catch (IOException e) {

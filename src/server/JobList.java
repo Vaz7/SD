@@ -17,15 +17,6 @@ public class JobList {
     private Condition isEmpty = l.newCondition();
     private Condition canExecute = l.newCondition();
 
-    public List<Job> getJobQueue() {
-        this.readfifo.lock();
-        try{
-            return jobQueue;
-        } finally {
-            this.readfifo.unlock();
-        }
-    }
-
     public void printQueue(){
         System.out.println("the queue has " + this.jobQueue.size() + " elements!");
     }
@@ -39,14 +30,14 @@ public class JobList {
                 canExecute.await();
             }
             res = jobQueue.get(0);
-            jobQueue.remove(0);
+            jobQueue.removeFirst();
+            return res;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
             writefifo.unlock();
             l.unlock();
         }
-        return res;
     }
 
     public void addJob(Job j){
@@ -54,8 +45,7 @@ public class JobList {
         l.lock();
         try{
             jobQueue.add(j);
-
-            isEmpty.signalAll();
+            isEmpty.signal();
         } finally {
             writefifo.unlock();
             l.unlock();
@@ -64,10 +54,8 @@ public class JobList {
     public void isEmpty(){
         l.lock();
         try{
-            List<Job> a = getJobQueue();
-            while(a.isEmpty()){
+            while(this.jobQueue.isEmpty()){
                 isEmpty.await();
-               
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

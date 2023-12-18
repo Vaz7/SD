@@ -108,8 +108,11 @@ public class Client {
             // dicionario na classe Mensagem
 
             System.out.println(new String(rcvd.getData()));
+            Thread.sleep(10000);
         } catch(IOException e){
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
