@@ -26,8 +26,10 @@ public class JobExecute implements Runnable{
             throw new RuntimeException(e);
         }
         try {
+            int meem = job.getMemoria();
+            mem.updateMem(-meem);
             byte[] output = JobFunction.execute(this.job.getBytes());
-            mem.updateMem(-job.getMemoria());
+            mem.updateMem(meem);
             System.err.println("success, returned " + output.length + " bytes");
 
 

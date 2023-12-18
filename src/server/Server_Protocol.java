@@ -28,7 +28,7 @@ public class Server_Protocol {
                 System.out.println("Client is connected " + clientSocket.getInetAddress());
 
                 // criar thread a seguir
-                Thread clientThread = new Thread(new ClientHandler(clientSocket, server,jobList));
+                Thread clientThread = new Thread(new ClientHandler(clientSocket, server,jobList, mem));
                 clientThread.start();
             }
 

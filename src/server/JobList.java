@@ -63,4 +63,13 @@ public class JobList {
             l.unlock();
         }
     }
+
+    public int size(){
+        l.lock();
+        try{
+            return this.jobQueue.size();
+        } finally {
+            l.unlock();
+        }
+    }
 }

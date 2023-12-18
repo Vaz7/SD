@@ -67,21 +67,15 @@ public class Client {
             else{
                 int choice = view.loggedOptions();
                 switch(choice){
-                    case 4:
+                    case (4):
                         String path = view.getFile();
                         int mem = view.getMemory();
-                        try{
-                            byte[] fileContent = Files.readAllBytes(Paths.get(path));
-                            con.sendMessage(new Message(fileContent, (byte) 3, mem));
-
-                            Message rcvd = con.receiveMessage();
-                            // @TODO
-                            // meter a interpretar as mensagens que cria a partir do (byte)
-                            // dicionario na classe Mensagem
-                            System.out.println(new String(rcvd.getData()));
-                        } catch(IOException e){
-                            e.printStackTrace();
-                        }
+                        Thread exe = new Thread(new Task4(path, mem, con));
+                        exe.start();
+                        break;
+                    case (5):
+                        Thread exe2 = new Thread(new Task5(con));
+                        exe2.start();
                         break;
                     case 0:
                         System.out.println("Exiting the program. Goodbye!");

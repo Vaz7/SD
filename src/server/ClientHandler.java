@@ -10,16 +10,19 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.nio.ByteBuffer;
 
 public class ClientHandler implements Runnable{
     private Socket clientSocket;
     private Server server;
     private JobList jobList;
+    private Memory mem;
 
-    public ClientHandler(Socket clientSocket, Server server, JobList jobList) {
+    public ClientHandler(Socket clientSocket, Server server, JobList jobList, Memory mem) {
         this.clientSocket = clientSocket;
         this.server = server;
         this.jobList = jobList;
+        this.mem = mem;
     }
 
     @Override
@@ -44,6 +47,14 @@ public class ClientHandler implements Runnable{
                         break;
                     case 5:
                         con.sendMessage(new Message((byte) 10));
+                        break;
+                    case 6:
+                        int size = this.jobList.size();
+                        int memory = this.mem.getAvailableMemory();
+                        byte[] data = new byte[1];
+                        data[0] = (byte) size;
+                        con.sendMessage(new Message(data, (byte) 4, memory));
+                        break;
                 }
             }
         } catch (IOException e) {
@@ -97,6 +108,8 @@ public class ClientHandler implements Runnable{
                 jobList.printQueue();
 
                 break;
+            case 4:
+                return 6;
         }
         return -1;
     }

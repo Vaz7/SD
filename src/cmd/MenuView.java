@@ -46,13 +46,14 @@ public class MenuView {
 
     public int loggedOptions(){
         System.out.println("4. Enter File Name");
+        System.out.println("5. Check Memory and Queue Size");
         System.out.println("0. Exit");
 
         int option = 0;
         do{
             option = leInteiro();
-            if(option != 0 && option != 4)
-                System.out.println("Write the value 0 or 4!");
+            if(option != 0 && option != 4 && option != 5)
+                System.out.println("Write the value 0, 4 or 5!");
         } while(option != 0 && option != 4 && option != 5);
 
         return option;
