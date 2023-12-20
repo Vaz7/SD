@@ -5,8 +5,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Memory {
     private ReentrantLock memory = new ReentrantLock();
-    private int availableMemory = 100;
-    private int totalMemory = 100;
+    private int availableMemory = 10000;
+    private int totalMemory = 10000;
 
 
     public void updateMem(int mem) {

@@ -5,17 +5,18 @@ import cmd.Message;
 import sd23.JobFunction;
 import sd23.JobFunctionException;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
-public class JobExecute implements Runnable{
+public class JobExecute implements Runnable {
     private Job job;
     private Memory mem;
 
-    public JobExecute(Job job, Memory mem){
+    public JobExecute(Job job, Memory mem) {
         this.job = job;
         this.mem = mem;
     }
+
     @Override
     public void run() {
         Socket clientSocket = job.getSocket();
@@ -33,8 +34,9 @@ public class JobExecute implements Runnable{
 
 
             con.sendMessage(new Message(output, (byte) 8, 0));
+
         } catch (JobFunctionException e) {
-            System.err.println("job failed: code="+e.getCode()+" message="+e.getMessage());
+            System.err.println("job failed: code=" + e.getCode() + " message=" + e.getMessage());
             int meem = job.getMemoria();
             mem.updateMem(meem);
             try {
@@ -46,4 +48,7 @@ public class JobExecute implements Runnable{
             throw new RuntimeException(e);
         }
     }
+
+
+
 }
