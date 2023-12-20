@@ -30,4 +30,5 @@ bin/
 
 *.class
 
-.7z
+##zip##
+*.7z
