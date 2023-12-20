@@ -27,7 +27,6 @@ public class JobExecute implements Runnable{
         }
         try {
             int meem = job.getMemoria();
-            mem.updateMem(-meem);
             byte[] output = JobFunction.execute(this.job.getBytes());
             mem.updateMem(meem);
             System.err.println("success, returned " + output.length + " bytes");
@@ -36,6 +35,8 @@ public class JobExecute implements Runnable{
             con.sendMessage(new Message(output, (byte) 8, 0));
         } catch (JobFunctionException e) {
             System.err.println("job failed: code="+e.getCode()+" message="+e.getMessage());
+            int meem = job.getMemoria();
+            mem.updateMem(meem);
             try {
                 con.sendMessage(new Message((byte) 9));
             } catch (IOException ex) {

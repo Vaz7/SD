@@ -13,46 +13,48 @@ public class JobList {
     private Lock writefifo = fifo.writeLock();
     private Lock readfifo = fifo.readLock();
 
-    private ReentrantLock l = new ReentrantLock();
-    private Condition isEmpty = l.newCondition();
-    private Condition canExecute = l.newCondition();
-
+    private static ReentrantLock l = new ReentrantLock();
+    private static Condition canExecute = l.newCondition();
+    private ReentrantLock l2 = new ReentrantLock();
+    private Condition isEmpty = l2.newCondition();
     public void printQueue(){
         System.out.println("the queue has " + this.jobQueue.size() + " elements!");
     }
 
-    public Job removeJob(int availableMemory){
-        writefifo.lock();
+    public Job removeJob(Memory mem){
+
         l.lock();
         Job res;
         try{
-            while(jobQueue.get(0).getMemoria() > availableMemory){
+            res = getFirst();
+            while(res.getMemoria() > mem.getAvailableMemory()){
                 canExecute.await();
             }
-            res = jobQueue.get(0);
-            jobQueue.removeFirst();
+
+            mem.updateMem(-res.getMemoria());
+
+            removeFirst();
             return res;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            writefifo.unlock();
             l.unlock();
         }
     }
 
     public void addJob(Job j){
         writefifo.lock();
-        l.lock();
+        l2.lock();
         try{
             jobQueue.add(j);
-            isEmpty.signal();
+            isEmpty.signalAll();
         } finally {
             writefifo.unlock();
-            l.unlock();
+            l2.unlock();
         }
     }
     public void isEmpty(){
-        l.lock();
+        l2.lock();
         try{
             while(this.jobQueue.isEmpty()){
                 isEmpty.await();
@@ -60,16 +62,45 @@ public class JobList {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            l.unlock();
+            l2.unlock();
         }
     }
 
     public int size(){
-        l.lock();
+        readfifo.lock();
         try{
             return this.jobQueue.size();
         } finally {
+            readfifo.unlock();
+        }
+    }
+
+    public static void freeCond(){
+        try {
+            l.lock();
+            canExecute.signalAll();
+        }
+        finally {
             l.unlock();
+        }
+    }
+
+    private void removeFirst(){
+        try{
+            writefifo.lock();
+            this.jobQueue.removeFirst();
+        }
+        finally {
+            writefifo.unlock();
+        }
+    }
+    private Job getFirst(){
+        try {
+            writefifo.lock();
+            return this.jobQueue.getFirst();
+        }
+        finally {
+            writefifo.unlock();
         }
     }
 }

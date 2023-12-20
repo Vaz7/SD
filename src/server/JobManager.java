@@ -15,7 +15,7 @@ public class JobManager implements Runnable {
     public void run() {
         while (true){
             jobList.isEmpty();
-            Job c = jobList.removeJob(this.mem.getAvailableMemory());
+            Job c = jobList.removeJob(this.mem);
             Thread exec = new Thread(new JobExecute(c, mem));
             exec.start();
         }

@@ -99,10 +99,11 @@ public class ClientHandler implements Runnable{
                 // aqui vai apenas adicionar a uma "lista"
                 // Método de listar o código com a memória e criar algoritmo de escolha
                 // utilizar conditions
-                if(tmp.getNum() > 500){
+                if(tmp.getNum() > mem.getTotalMemory()){
                     return 5;
                 }
                 Job job = new Job(tmp.getData(),tmp.getNum(), this.clientSocket);
+                System.out.println("Job has " + job.getMemoria() + " bytes");
                 jobList.addJob(job);
                 System.err.println("Job added to queue");
                 jobList.printQueue();

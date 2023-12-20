@@ -97,11 +97,17 @@ public class Client {
             con.sendMessage(new Message(fileContent, (byte) 3, mem));
 
             Message rcvd = con.receiveMessage();
-            // @TODO
+
             // meter a interpretar as mensagens que cria a partir do (byte)
             // dicionario na classe Mensagem
 
-            System.out.println(new String(rcvd.getData()));
+
+
+            if(rcvd.getMsg() == (byte) 8)
+                System.out.println(new String(rcvd.getData()));
+            else if (rcvd.getMsg() == (byte) 9)
+                System.out.println("The task failed. Try again...");
+
             Thread.sleep(10000);
         } catch(IOException e){
             e.printStackTrace();

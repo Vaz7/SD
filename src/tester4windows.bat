@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 rem Set the number of times to run the program (N)
-set N=4
+set N=10
 
 rem Set the path to the Java compiler (javac) and Java runtime (java)
 set JAVA_COMPILER_PATH="C:\Program Files\Java\jdk-21\bin\javac.exe"

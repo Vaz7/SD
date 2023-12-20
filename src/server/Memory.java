@@ -5,15 +5,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Memory {
     private ReentrantLock memory = new ReentrantLock();
-    private int availableMemory = 500;
-    private Condition canExecute = memory.newCondition();
+    private int availableMemory = 100;
+    private int totalMemory = 100;
+
 
     public void updateMem(int mem) {
         memory.lock();
         try {
             this.availableMemory += mem;
             if(mem > 0){
-                this.canExecute.signalAll();
+                JobList.freeCond();
             }
         } finally {
             memory.unlock();
@@ -21,6 +22,16 @@ public class Memory {
     }
 
     public int getAvailableMemory(){
-        return this.availableMemory;
+        try{
+            memory.lock();
+            return this.availableMemory;
+        }
+        finally {
+            memory.unlock();
+        }
+
+    }
+    public int getTotalMemory(){
+        return this.totalMemory;
     }
 }
