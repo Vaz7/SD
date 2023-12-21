@@ -31,29 +31,31 @@ public class ClientHandler implements Runnable{
             Connection con = new Connection(clientSocket);
             for ( ; ; ) {
                 Message received = con.receiveMessage();
+                int tag = received.getTag();
+                System.out.println(tag);
                 int ret = messageManager(received);
                 switch(ret){
                     case 1:
-                        con.sendMessage(new Message((byte) 4));
+                        con.sendMessage(new Message((byte) 4, tag));
                         break;
                     case 3:
-                        con.sendMessage(new Message((byte) 6));
+                        con.sendMessage(new Message((byte) 6, tag));
                         break;
                     case 2:
-                        con.sendMessage(new Message((byte) 5));
+                        con.sendMessage(new Message((byte) 5, tag));
                         break;
                     case 4:
-                        con.sendMessage(new Message((byte) 7));
+                        con.sendMessage(new Message((byte) 7, tag));
                         break;
                     case 5:
-                        con.sendMessage(new Message((byte) 10));
+                        con.sendMessage(new Message((byte) 10, tag));
                         break;
                     case 6:
                         int size = this.jobList.size();
                         int memory = this.mem.getAvailableMemory();
                         byte[] data = new byte[1];
                         data[0] = (byte) size;
-                        con.sendMessage(new Message(data, (byte) 4, memory));
+                        con.sendMessage(new Message(data, (byte) 4, memory,tag));
                         break;
                 }
             }
@@ -102,7 +104,7 @@ public class ClientHandler implements Runnable{
                 if(tmp.getNum() > mem.getTotalMemory()){
                     return 5;
                 }
-                Job job = new Job(tmp.getData(),tmp.getNum(), this.clientSocket);
+                Job job = new Job(tmp.getData(),tmp.getNum(), this.clientSocket, tmp.getTag());
                 System.out.println("Job has " + job.getMemoria() + " bytes");
                 jobList.addJob(job);
                 System.err.println("Job added to queue");

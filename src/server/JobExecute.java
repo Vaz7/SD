@@ -33,14 +33,14 @@ public class JobExecute implements Runnable {
             System.err.println("success, returned " + output.length + " bytes");
 
 
-            con.sendMessage(new Message(output, (byte) 8, 0));
+            con.sendMessage(new Message(output, (byte) 8, 0, this.job.getTag()));
 
         } catch (JobFunctionException e) {
             System.err.println("job failed: code=" + e.getCode() + " message=" + e.getMessage());
             int meem = job.getMemoria();
             mem.updateMem(meem);
             try {
-                con.sendMessage(new Message((byte) 9));
+                con.sendMessage(new Message((byte) 9, this.job.getTag()));
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

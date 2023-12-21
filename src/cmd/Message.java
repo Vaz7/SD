@@ -42,18 +42,22 @@ public class Message implements Serializable {
      */
     private byte msg; // 1 byte
 
-    public Message(byte[] data, byte msg, int num) {
+    private int tag;
+
+    public Message(byte[] data, byte msg, int num, int tag) {
         this.data = Arrays.copyOf(data, data.length);
         this.length = data.length;
         this.msg = msg;
         this.num = num;
+        this.tag = tag;
     }
 
-    public Message(byte msg){
+    public Message(byte msg, int tag){
         this.data = new byte[0];
         this.msg = msg;
         this.length = 0;
         this.num = 0;
+        this.tag = tag;
     }
 
     public byte[] getData() {
@@ -72,11 +76,16 @@ public class Message implements Serializable {
         return msg;
     }
 
+    public int getTag() {
+        return tag;
+    }
+
     public void serialize(DataOutputStream dos) throws IOException {
         dos.writeInt(this.length);
         dos.write(this.data);
         dos.writeInt(this.num);
         dos.writeByte(this.msg);
+        dos.writeInt(this.tag);
     }
 
     public static Message deserialize(DataInputStream dis) throws IOException {
@@ -85,7 +94,8 @@ public class Message implements Serializable {
         dis.read(data, 0, len);
         int num = dis.readInt();
         byte msg = dis.readByte();
-        return new Message(data, msg, num);
+        int tag = dis.readInt();
+        return new Message(data, msg, num, tag);
     }
 
 

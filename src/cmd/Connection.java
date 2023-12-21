@@ -8,13 +8,14 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Connection implements AutoCloseable {
+    private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
     private Lock readl = new ReentrantLock();
     private Lock writel = new ReentrantLock();
 
     public Connection(Socket clientSocket) throws IOException {
-        System.out.println(clientSocket);
+        this.socket = clientSocket;
         this.dis = new DataInputStream(clientSocket.getInputStream());
         this.dos = new DataOutputStream(clientSocket.getOutputStream());
     }
@@ -29,7 +30,7 @@ public class Connection implements AutoCloseable {
         }
     }
 
-    public Message receiveMessage(){
+    public Message receiveMessage() throws IOException{
         this.readl.lock();
         try{
             return Message.deserialize(dis);
@@ -42,6 +43,6 @@ public class Connection implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        // @TODO
+        this.socket.close();
     }
 }

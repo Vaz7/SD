@@ -16,16 +16,18 @@ import java.time.format.DateTimeFormatter;
 
 public class Client {
     private boolean loggedIn;
+    private int tag = 0;
 
     public Client(){
         this.loggedIn = false;
     }
 
-    public void connection() throws IOException {
+    public void connection() throws IOException, InterruptedException {
         MenuView view = new MenuView();
         Socket socket = new Socket("127.0.0.1", 1234);
         System.out.println("Connected to the server at 127.0.0.1:1234");
-        Connection con = new Connection(socket);
+        Demultiplexer con = new Demultiplexer(new Connection(socket));
+        con.start();
         boolean loop = true;
         while(loop){
             // LOG IN
@@ -35,8 +37,8 @@ public class Client {
                     case 1:
                         do{
                             String dados = view.authenticate();
-                            con.sendMessage(new Message(dados.getBytes(), (byte) 1, 0));
-                            Message rcvd = con.receiveMessage();
+                            con.sendMessage(new Message(dados.getBytes(), (byte) 1, 0, tag));
+                            Message rcvd = con.receiveMessage(this.tag);
                             if(rcvd.getMsg() == (byte) 5){
                                 this.loggedIn = true;
                                 System.out.println("Authentication successful. Welcome! ");
@@ -50,8 +52,8 @@ public class Client {
                         boolean register = false;
                         do{
                             String dados = view.authenticate();
-                            con.sendMessage(new Message(dados.getBytes(), (byte) 2, 0));
-                            Message rcvd = con.receiveMessage();
+                            con.sendMessage(new Message(dados.getBytes(), (byte) 2, 0, tag));
+                            Message rcvd = con.receiveMessage(this.tag);
                             if(rcvd.getMsg() == (byte) 7){
                                 System.out.println("Registration successful. Welcome!");
                                 register = true;
@@ -75,11 +77,11 @@ public class Client {
                     case (4):
                         String path = view.getFile();
                         int mem = view.getMemory();
-                        Thread exe = new Thread(new Task4(path, mem, con));
+                        Thread exe = new Thread(new Task4(path, mem, con, ++this.tag));
                         exe.start();
                         break;
                     case (5):
-                        Thread exe2 = new Thread(new Task5(con));
+                        Thread exe2 = new Thread(new Task5(con, ++this.tag));
                         exe2.start();
                         break;
                     case 0:
@@ -99,7 +101,7 @@ public class Client {
 
         try{
             byte[] fileContent = Files.readAllBytes(Paths.get(path));
-            con.sendMessage(new Message(fileContent, (byte) 3, mem));
+            con.sendMessage(new Message(fileContent, (byte) 3, mem, tag));
 
             Message rcvd = con.receiveMessage();
 
