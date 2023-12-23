@@ -20,19 +20,23 @@ public class Server_Protocol {
     SSQueue slaveServers = new SSQueue();
     private List<InetSocketAddress> ipPortaServers = new ArrayList<>();
     private int port;
+    String [] args;
 
-    public Server_Protocol(int port){
+    public Server_Protocol(int port,String[]args){
         this.port = port;
         this.server = new Server();
+        this.args=args;
 
     }
 
     public void populateSS() throws UnknownHostException {
-        InetSocketAddress s1 = new InetSocketAddress(InetAddress.getByName("127.0.0.1"),12345);
-        InetSocketAddress s2 = new InetSocketAddress(InetAddress.getByName("127.0.0.1"),12346);
 
-        ipPortaServers.add(s1);
-        ipPortaServers.add(s2);
+        for(int i=0;i< args.length;i+=2){
+            String ip = args[i];
+            int port = Integer.parseInt(args[i+1]);
+            InetSocketAddress s = new InetSocketAddress(InetAddress.getByName(ip),port);
+            ipPortaServers.add(s);
+        }
     }
 
 

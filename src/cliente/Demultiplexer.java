@@ -59,6 +59,10 @@ public class Demultiplexer implements AutoCloseable{
         }).start();
     }
 
+    public Connection getConnection(){
+        return this.conn;
+    }
+
     public void sendMessage(Message frame) throws IOException {
         conn.sendMessage(frame);
     }
