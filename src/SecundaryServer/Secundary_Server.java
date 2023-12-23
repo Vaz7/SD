@@ -1,8 +1,8 @@
 package SecundaryServer;
 
 import cmd.Connection;
+import cmd.Job;
 import cmd.Message;
-import server.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,7 +19,7 @@ public class Secundary_Server {
     public void initServer() {
         try{
             ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("Server is running on port " + port);
+            System.out.println("Secundary server is running on port " + port);
 
             Socket clientSocket = serverSocket.accept();
             Connection con = new Connection(clientSocket);

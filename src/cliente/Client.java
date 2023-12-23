@@ -4,15 +4,10 @@ import cmd.Connection;
 import cmd.MenuView;
 import cmd.Message;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class Client {
     private boolean loggedIn;
@@ -97,56 +92,12 @@ public class Client {
     public void connectionTest(String path, int mem) throws IOException {
         Socket socket = new Socket("127.0.0.1", 1234);
         System.out.println("Connected to the server at 127.0.0.1:1234");
-        Connection con = new Connection(socket);
+        Demultiplexer con = new Demultiplexer(new Connection(socket));
+        con.start();
 
-        try{
-            byte[] fileContent = Files.readAllBytes(Paths.get(path));
-            con.sendMessage(new Message(fileContent, (byte) 3, mem, tag));
-
-            Message rcvd = con.receiveMessage();
-
-            // meter a interpretar as mensagens que cria a partir do (byte)
-            // dicionario na classe Mensagem
-
-
-
-            if(rcvd.getMsg() == (byte) 8) {
-                byte[] data = rcvd.getData();
-                //se quisermos guardar o output num ficheiro zipado para testar na defesa
-                //writeOutputToFile(data);
-                System.out.println(new String(data));
-            }
-
-
-            else if (rcvd.getMsg() == (byte) 9)
-                System.out.println("The task failed. Try again...");
-
-            //Thread.sleep(10000);
-        } catch(IOException e){
-            e.printStackTrace();
-        }
+        Thread exe = new Thread(new Task4(path,mem,con,++this.tag));
+        exe.start();
     }
 
-    private void writeOutputToFile(byte[] output) throws IOException {
-        // Generate a timestamp for the filename
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
-        String timestamp = now.format(formatter);
 
-        String fileName = "respostas" + File.separator + "output_" + timestamp + ".7z";
-        // Create the file if it doesn't exist
-        File file = new File(fileName);
-        if (!file.exists()) {
-            boolean created = file.createNewFile();
-            if (!created) {
-                return;
-            }
-        }
-        // Write the output to the file
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(output);
-        }
-
-
-    }
 }

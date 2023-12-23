@@ -8,7 +8,7 @@ JAVA_COMPILER_PATH="/bin/javac"
 JAVA_RUNTIME_PATH="/bin/java"
 
 # Set the path to the Java source code
-JAVA_SOURCE_PATH="cliente/Main.java"
+JAVA_SOURCE_PATH="cliente/*.java"
 
 # Loop N times
 for ((i=1; i<=N; i++)); do

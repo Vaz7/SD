@@ -4,11 +4,9 @@ import cmd.Connection;
 import cmd.Message;
 import sd23.JobFunction;
 import sd23.JobFunctionException;
-import server.Job;
-import server.Memory;
+import cmd.Job;
 
 import java.io.*;
-import java.net.Socket;
 
 public class SSJobExecute implements Runnable {
     private Job job;

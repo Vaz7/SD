@@ -1,5 +1,8 @@
 package server;
 
+import cmd.Job;
+import cmd.Memory;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

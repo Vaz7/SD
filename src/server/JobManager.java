@@ -1,5 +1,10 @@
 package server;
 
+<<<<<<< HEAD
+=======
+import cmd.Job;
+import cmd.Memory;
+>>>>>>> refs/remotes/origin/main
 
 public class JobManager implements Runnable {
     private Memory mem;

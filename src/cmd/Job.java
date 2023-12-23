@@ -1,4 +1,4 @@
-package server;
+package cmd;
 
 import java.net.Socket;
 import java.util.concurrent.locks.Condition;

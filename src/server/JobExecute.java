@@ -1,9 +1,9 @@
 package server;
 
 import cmd.Connection;
+import cmd.Job;
+import cmd.Memory;
 import cmd.Message;
-import sd23.JobFunction;
-import sd23.JobFunctionException;
 
 import java.io.*;
 import java.net.Socket;
