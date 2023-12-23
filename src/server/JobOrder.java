@@ -1,4 +1,5 @@
 package server;
+import cmd.Job;
 
 public class JobOrder {
     private Job job;
