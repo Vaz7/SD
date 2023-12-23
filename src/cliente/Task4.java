@@ -35,6 +35,8 @@ public class Task4 implements Runnable{
                 System.out.println(new String(rcvd.getData()));
             else if (rcvd.getMsg() == (byte) 9)
                 System.out.println("The task failed. Try again...");
+            else if (rcvd.getMsg() == (byte) 10)
+                System.out.println("Job memory is bigger than biggest server memory!");
         } catch(IOException e){
             e.printStackTrace();
         } catch (InterruptedException e) {

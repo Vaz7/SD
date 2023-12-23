@@ -15,6 +15,8 @@ public class Memory {
     }
 
 
+
+
     public void updateMem(int mem) {
         memory.lock();
         try {

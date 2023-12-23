@@ -43,14 +43,13 @@ public class Connection implements AutoCloseable {
     }
 
     public int readInt(){
-        this.writel.lock();
+        this.readl.lock();
         try{
             return dis.readInt();
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            this.writel.unlock();
+            this.readl.unlock();
         }
     }
 

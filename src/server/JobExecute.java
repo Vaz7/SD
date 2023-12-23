@@ -13,11 +13,12 @@ public class JobExecute implements Runnable {
     private Memory mem;
     private Connection con;
 
-    public JobExecute(Job job, Memory mem,Connection con) {
+    public JobExecute(Job job,Connection con,Memory mem) {
         this.job = job;
-        this.mem = mem;
+
         //connection para o SS
         this.con = con;
+        this.mem = mem;
     }
 
     @Override

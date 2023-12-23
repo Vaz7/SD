@@ -11,18 +11,24 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class ClientHandler implements Runnable{
     private Socket clientSocket;
     private Server server;
     private JobList jobList;
     private Memory mem;
+    SSQueue slaveServers;
 
-    public ClientHandler(Socket clientSocket, Server server, JobList jobList, Memory mem) {
+    private int maxMem=0;
+
+    public ClientHandler(Socket clientSocket, Server server, JobList jobList, SSQueue slaveServers) {
         this.clientSocket = clientSocket;
         this.server = server;
         this.jobList = jobList;
-        this.mem = mem;
+        this.slaveServers = slaveServers;
+        this.maxMem  = slaveServers.getMaxTotalMemory();
     }
 
     @Override
@@ -101,9 +107,14 @@ public class ClientHandler implements Runnable{
                 // aqui vai apenas adicionar a uma "lista"
                 // Método de listar o código com a memória e criar algoritmo de escolha
                 // utilizar conditions
-                if(tmp.getNum() > mem.getTotalMemory()){
+
+                //para garantir que a mensagem não é maior que a maior memoria dos servidores
+
+
+                if(tmp.getNum() > this.maxMem){
                     return 5;
                 }
+
                 Job job = new Job(tmp.getData(),tmp.getNum(), this.clientSocket, tmp.getTag());
                 System.out.println("Job has " + job.getMemoria() + " bytes");
                 jobList.addJob(job);
@@ -131,6 +142,5 @@ public class ClientHandler implements Runnable{
             return null;
         }
     }
-
 
 }

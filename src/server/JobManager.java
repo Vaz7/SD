@@ -7,42 +7,26 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class JobManager implements Runnable {
     private Memory mem;
     private JobList jobList;
+    private SSQueue slaveServers;
 
-    private List<SSdata> slaveServers = new ArrayList<SSdata>();
-
-    public JobManager(Memory mem,JobList jobList) throws UnknownHostException {
-        this.mem = mem;
+    public JobManager(JobList jobList, SSQueue slaveServers){
         this.jobList = jobList;
-        SSdata s1 = new SSdata("127.0.0.1",12345);
-        SSdata s2 = new SSdata("127.0.0.1",12113);
-        slaveServers.add(s1);
-        slaveServers.add(s2);
+        this.slaveServers = slaveServers;
     }
-
-    public void startCons(){
-        for(SSdata s : slaveServers){
-            try {
-                Socket SSsocket = new Socket(s.getIp(),s.getPort());
-                Connection con = new Connection(SSsocket);
-                s.setConnection(con);
-                s.setAvailableMem(con.readInt());
-            } catch (IOException e){
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
     @Override
     public void run() {
-        startCons();
         while (true){
             jobList.isEmpty();
-            Job c = jobList.removeJob(this.mem);
-            Thread exec = new Thread(new JobExecute(c, mem,slaveServers.getFirst().getCon()));
+            SSdata chosenOne = slaveServers.removeChosen();
+            Job c = jobList.removeJob(chosenOne.getMem());
+            slaveServers.addServer(chosenOne);
+            Thread exec = new Thread(new JobExecute(c,chosenOne.getCon(),chosenOne.getMem()));
             exec.start();
         }
     }

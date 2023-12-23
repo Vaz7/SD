@@ -5,32 +5,23 @@ import cmd.Connection;
 import java.net.UnknownHostException;
 
 public class SSdata {
-    String ip;
-    int port;
     Memory mem;
     Connection con;
 
-    public SSdata(String ip, int port) throws UnknownHostException {
-        this.ip = ip;
-        this.port = port;
-    }
-
-    public void setAvailableMem(int availableMem){
-        this.mem = new Memory(availableMem);
-    }
-
-    public void setConnection(Connection con){
+    public SSdata(int mem,Connection con) throws UnknownHostException {
+        this.mem = new Memory(mem);
         this.con = con;
     }
 
-    public String getIp(){
-        return ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
     public Connection getCon(){
         return this.con;
+    }
+
+    public int getAvailableMem(){
+        return this.mem.getAvailableMemory();
+    }
+
+    public Memory getMem(){
+        return this.mem;
     }
 }
