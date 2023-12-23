@@ -9,17 +9,19 @@ public class Server_Protocol {
 
     private Server server;
 
-    public Server_Protocol() {
+    public JobList jobList = new JobList();
+    private Memory mem = new Memory(10000);
+
+    private int port;
+
+    public Server_Protocol(int port){
+        this.port = port;
         this.server = new Server();
     }
-
-    public JobList jobList = new JobList();
-    private Memory mem = new Memory();
-
     public void initServer() {
         try{
-            ServerSocket serverSocket = new ServerSocket(1234);
-            System.out.println("Server is running on port 1234");
+            ServerSocket serverSocket = new ServerSocket(this.port);
+            System.out.println("Server is running on port " + this.port);
             Thread jobmanager = new Thread(new JobManager(mem,jobList));
             jobmanager.start();
 

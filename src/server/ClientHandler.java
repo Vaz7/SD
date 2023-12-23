@@ -32,7 +32,7 @@ public class ClientHandler implements Runnable{
             for ( ; ; ) {
                 Message received = con.receiveMessage();
                 int tag = received.getTag();
-                System.out.println(tag);
+
                 int ret = messageManager(received);
                 switch(ret){
                     case 1:

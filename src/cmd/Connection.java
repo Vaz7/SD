@@ -30,6 +30,34 @@ public class Connection implements AutoCloseable {
         }
     }
 
+    public void sendInt(int num){
+        this.writel.lock();
+        try{
+            dos.writeInt(num);
+            dos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.writel.unlock();
+        }
+    }
+
+    public int readInt(){
+        this.writel.lock();
+        try{
+            return dis.readInt();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            this.writel.unlock();
+        }
+    }
+
+    public Socket getSocket(){
+        return this.socket;
+    }
+
     public Message receiveMessage() throws IOException{
         this.readl.lock();
         try{

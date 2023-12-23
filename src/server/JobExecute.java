@@ -11,39 +11,42 @@ import java.net.Socket;
 public class JobExecute implements Runnable {
     private Job job;
     private Memory mem;
+    private Connection con;
 
-    public JobExecute(Job job, Memory mem) {
+    public JobExecute(Job job, Memory mem,Connection con) {
         this.job = job;
         this.mem = mem;
+        //connection para o SS
+        this.con = con;
     }
 
     @Override
     public void run() {
         Socket clientSocket = job.getSocket();
-        Connection con = null;
+        Connection conWithClient = null;
         try {
-            con = new Connection(clientSocket);
+            conWithClient = new Connection(clientSocket);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         try {
             int meem = job.getMemoria();
-            byte[] output = JobFunction.execute(this.job.getBytes());
+            Message mes = new Message(job.getBytes(),(byte)3,job.getMemoria(),job.getTag());
+            con.sendMessage(mes);
+
+            Message recievedFromSS = con.receiveMessage();
+
             mem.updateMem(meem);
-            System.err.println("success, returned " + output.length + " bytes");
+            System.err.println("[" + con.getSocket().toString() + "]" + " returned " + recievedFromSS.getData().length + " bytes");
 
-
-            con.sendMessage(new Message(output, (byte) 8, 0, this.job.getTag()));
-
-        } catch (JobFunctionException e) {
-            System.err.println("job failed: code=" + e.getCode() + " message=" + e.getMessage());
-            int meem = job.getMemoria();
-            mem.updateMem(meem);
-            try {
-                con.sendMessage(new Message((byte) 9, this.job.getTag()));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+            if(recievedFromSS.getMsg()==9){
+                conWithClient.sendMessage(new Message((byte) 9, this.job.getTag()));
             }
+            else{
+                conWithClient.sendMessage(new Message(recievedFromSS.getData(), (byte) 8, 0, this.job.getTag()));
+            }
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
