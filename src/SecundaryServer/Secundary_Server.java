@@ -9,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Secundary_Server {
-    private int mem = 10000;
+    private int mem = 10;
     private int port;
 
     public Secundary_Server(int port){

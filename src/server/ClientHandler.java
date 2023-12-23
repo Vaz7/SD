@@ -116,8 +116,9 @@ public class ClientHandler implements Runnable{
                 }
 
                 Job job = new Job(tmp.getData(),tmp.getNum(), this.clientSocket, tmp.getTag());
+                JobOrder job2 = new JobOrder(job);
                 System.out.println("Job has " + job.getMemoria() + " bytes");
-                jobList.addJob(job);
+                jobList.addJob(job2);
                 System.err.println("Job added to queue");
                 jobList.printQueue();
 

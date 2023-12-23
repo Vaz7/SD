@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SSQueue {
-    private PriorityQueue<SSdata> slaveServers = new PriorityQueue<SSdata>(new SSComparator());
+    private PriorityQueue<SSdata> slaveServers = new PriorityQueue<>(new SSComparator());
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private Lock writel = lock.writeLock();
     private Lock readl = lock.readLock();
