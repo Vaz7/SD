@@ -1,8 +1,8 @@
 package SecundaryServer;
 
 import cmd.Connection;
+import cmd.Job;
 import cmd.Message;
-import server.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;

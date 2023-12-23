@@ -1,24 +1,19 @@
 package server;
 
 import cmd.Connection;
+import cmd.Job;
 import cmd.Message;
-import sd23.JobFunction;
-import sd23.JobFunctionException;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.PriorityQueue;
 
 public class ClientHandler implements Runnable{
     private Socket clientSocket;
     private Server server;
     private JobList jobList;
-    private Memory mem;
     SSQueue slaveServers;
 
     private int maxMem=0;
@@ -58,7 +53,7 @@ public class ClientHandler implements Runnable{
                         break;
                     case 6:
                         int size = this.jobList.size();
-                        int memory = this.mem.getAvailableMemory();
+                        int memory = slaveServers.getTotalAvailableMem();
                         byte[] data = new byte[1];
                         data[0] = (byte) size;
                         con.sendMessage(new Message(data, (byte) 4, memory,tag));

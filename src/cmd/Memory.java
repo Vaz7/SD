@@ -1,4 +1,6 @@
-package server;
+package cmd;
+
+import server.JobList;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;

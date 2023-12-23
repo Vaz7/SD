@@ -11,7 +11,7 @@ public class SSQueue {
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private Lock writel = lock.writeLock();
     private Lock readl = lock.readLock();
-    
+
 
     public void addServer(SSdata ss){
         writel.lock();

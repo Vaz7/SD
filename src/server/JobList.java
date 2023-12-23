@@ -1,5 +1,8 @@
 package server;
 
+import cmd.Job;
+import cmd.Memory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;

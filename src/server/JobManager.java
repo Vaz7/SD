@@ -1,14 +1,7 @@
 package server;
 
-import cmd.Connection;
-
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.concurrent.locks.ReentrantLock;
+import cmd.Job;
+import cmd.Memory;
 
 public class JobManager implements Runnable {
     private Memory mem;
