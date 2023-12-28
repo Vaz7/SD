@@ -11,7 +11,6 @@ public class Main {
         else{
             System.out.println("Please use only 1 argument with the port number!");
         }
-
     }
 
 

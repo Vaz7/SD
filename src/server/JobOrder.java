@@ -1,6 +1,8 @@
 package server;
 import cmd.Job;
 
+import cmd.Job;
+
 public class JobOrder {
     private Job job;
     private int memLeft;

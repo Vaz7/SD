@@ -1,6 +1,8 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -36,16 +38,17 @@ public class SSQueue {
 
     public int getTotalAvailableMem(){
         int tot=0;
+        List<SSdata> ssdatas = new ArrayList<>();
         readl.lock();
         try {
-            for(SSdata s : slaveServers){
-                tot += s.getAvailableMem();
-            }
-            return tot;
-        }
-        finally {
+            ssdatas.addAll(slaveServers);
+        } finally {
             readl.unlock();
         }
+        for(SSdata s : ssdatas){
+            tot += s.getAvailableMem();
+        }
+        return tot;
     }
 
     public int getMaxTotalMemory(){
@@ -67,14 +70,9 @@ public class SSQueue {
     class SSComparator implements Comparator<SSdata> {
         @Override
         public int compare(SSdata o1, SSdata o2){
-            if(o1.getMem().getAvailableMemory()>o2.getMem().getAvailableMemory()){
-                return -1;
-            }
-            else if(o1.getMem().getAvailableMemory()<o2.getMem().getAvailableMemory()){
-                return 1;
-            }
-            else
-                return 0;
+            int o1mem = o1.getMem().getAvailableMemory();
+            int o2mem = o2.getMem().getAvailableMemory();
+            return Integer.compare(o2mem, o1mem);
         }
     }
 }
