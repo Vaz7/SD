@@ -9,7 +9,8 @@ set JAVA_COMPILER_PATH="C:\Program Files\Java\jdk-21\bin\javac.exe"
 set JAVA_RUNTIME_PATH="C:\Program Files\Java\jdk-21\bin\java.exe"
 
 rem Set the path to the Java source code
-set JAVA_SOURCE_PATH=cliente\*.java
+set JAVA_SOURCE_PATH=.\cmd\*.java .\cliente\*.java
+
 
 rem Loop N times
 for /L %%i in (1,1,%N%) do (

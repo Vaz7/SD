@@ -1,12 +1,11 @@
 package SecundaryServer;
 
 import cmd.Connection;
-import cmd.Message;
-import sd23.JobFunction;
-import sd23.JobFunctionException;
 import cmd.Job;
+import cmd.Message;
+import sd23.*;
 
-import java.io.*;
+import java.io.IOException;
 
 public class SSJobExecute implements Runnable {
     private Job job;

@@ -7,7 +7,8 @@ set JAVA_COMPILER_PATH="C:\Program Files\Java\jdk-21\bin\javac.exe"
 set JAVA_RUNTIME_PATH="C:\Program Files\Java\jdk-21\bin\java.exe"
 
 rem Set the path to the Java source code
-set JAVA_SOURCE_PATH=server\*.java
+set JAVA_SOURCE_PATH=.\cmd\*.java .\server\*.java
+
 
     rem Compile the Java source code
     %JAVA_COMPILER_PATH% %JAVA_SOURCE_PATH%
