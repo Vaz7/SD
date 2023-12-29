@@ -4,15 +4,14 @@
 JAVA_COMPILER_PATH="/bin/javac"
 JAVA_RUNTIME_PATH="/bin/java"
 
-# Set the path to the Java source code
-JAVA_SOURCE_PATH="SecundaryServer/*.java"
+# Set the path to the JAR file
+JAR_FILE="sd23.jar"
 
+# Compile the Java source code
+$JAVA_COMPILER_PATH -cp $JAR_FILE SecundaryServer/*.java cmd/*.java server/*.java cliente/*.java
 
-    # Compile the Java source code
-    $JAVA_COMPILER_PATH $JAVA_SOURCE_PATH
+# Run the Java program with varying arguments
+gnome-terminal --title="Java Program - $i" -- $JAVA_RUNTIME_PATH -cp $JAR_FILE:. SecundaryServer.Main 12345
+gnome-terminal --title="Java Program - $i" -- $JAVA_RUNTIME_PATH -cp $JAR_FILE:. SecundaryServer.Main 12346
+gnome-terminal --title="Java Program - $i" -- $JAVA_RUNTIME_PATH -cp $JAR_FILE:. SecundaryServer.Main 12347
 
-    # Run the Java program with varying arguments
-    gnome-terminal --title="Java Program - $i" -- $JAVA_RUNTIME_PATH -cp . SecundaryServer.Main 12345
-    gnome-terminal --title="Java Program - $i" -- $JAVA_RUNTIME_PATH -cp . SecundaryServer.Main 12346
-    gnome-terminal --title="Java Program - $i" -- $JAVA_RUNTIME_PATH -cp . SecundaryServer.Main 12347
-done
