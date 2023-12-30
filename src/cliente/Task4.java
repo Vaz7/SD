@@ -68,7 +68,6 @@ public class Task4 implements Runnable{
         try (FileOutputStream fos = new FileOutputStream(file)){
             fos.write(output);
             fos.flush();
-            fos.close();
         }
     }
 }

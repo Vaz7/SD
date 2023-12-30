@@ -15,6 +15,6 @@ set JAVA_SOURCE_PATH=.\cmd\*.java .\server\*.java
 
     rem Run the Java program with varying arguments in a separate command window
     rem the main server requires the ip and port of each secundary server
-    start "Java Program - %%i" %JAVA_RUNTIME_PATH% -cp . server.Main 127.0.0.1 12345 127.0.0.1 12346 127.0.0.1 12347
+    start "Main Server" %JAVA_RUNTIME_PATH% -cp . server.Main 127.0.0.1 12345 127.0.0.1 12346 127.0.0.1 12347
 
 endlocal
