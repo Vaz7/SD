@@ -56,7 +56,7 @@ public class ClientHandler implements Runnable{
                         int memory = slaveServers.getTotalAvailableMem();
                         byte[] data = new byte[1];
                         data[0] = (byte) size;
-                        con.sendMessage(new Message(data, (byte) 4, memory,tag));
+                        con.sendMessage(new Message(data, (byte) 12, memory,tag));
                         break;
                 }
             }
@@ -118,7 +118,7 @@ public class ClientHandler implements Runnable{
                 jobList.printQueue();
 
                 break;
-            case 4:
+            case 12:
                 return 6;
         }
         return -1;

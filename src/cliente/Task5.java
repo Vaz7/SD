@@ -17,7 +17,7 @@ public class Task5 implements Runnable{
     @Override
     public void run() {
         try {
-            con.sendMessage(new Message((byte) 4, tag));
+            con.sendMessage(new Message((byte) 12, tag));
             Message rcvd = con.receiveMessage(tag);
             byte[] asd = rcvd.getData();
             System.out.println("[Task 5]--[Pedido: " + tag + "]:");
